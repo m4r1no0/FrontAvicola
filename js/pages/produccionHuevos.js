@@ -41,12 +41,25 @@ async function openEditModal(produccionId) {
   try {
     const produccion = await produccionHuevosService.GetProduccionHuevosById(produccionId);
 
-    originalFecha = produccion.fecha;
+    originalFecha = produccion.fecha; // Guardamos la fecha original
+
+    const inputFecha = document.getElementById('edit-fecha');
+
     document.getElementById('edit-produccion-id').value = produccion.id_produccion;
     document.getElementById('edit-produccion-nombre').value = produccion.nombre_galpon;
     document.getElementById('edit-cantidad').value = produccion.cantidad;
-    document.getElementById('edit-fecha').value = produccion.fecha;
     document.getElementById('edit-tamaño').value = produccion.tamaño;
+
+    // --- VALIDACIÓN DE FECHA ---
+    inputFecha.value = produccion.fecha;
+    inputFecha.min = produccion.fecha; // No permite fechas anteriores
+
+    // Opcional: mostrar alerta si se intenta cambiar por debajo del mínimo
+    inputFecha.addEventListener('input', () => {
+      if (inputFecha.value < inputFecha.min) {
+        inputFecha.value = inputFecha.min;
+      }
+    });
 
     modalInstance.show();
   } catch (error) {
@@ -54,6 +67,7 @@ async function openEditModal(produccionId) {
     alert('No se pudieron cargar los datos de la producción.');
   }
 }
+
 
 // --- ENVÍO DEL FORMULARIO DE ACTUALIZACIÓN ---
 
