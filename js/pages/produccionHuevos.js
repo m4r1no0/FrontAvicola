@@ -171,6 +171,27 @@ function renderPaginationControls() {
   };
 }
 
+// --- FILTRADO POR FECHA ---
+
+function setupFilterListeners() {
+  const btnFiltrar = document.getElementById('btn-filtrar');
+  const inputFechaInicio = document.getElementById('filtro-fecha-inicio');
+  const inputFechaFin = document.getElementById('filtro-fecha-fin');
+
+  if (!btnFiltrar || !inputFechaInicio || !inputFechaFin) return;
+
+  btnFiltrar.addEventListener('click', () => {
+    // Tomar valores o null si están vacíos
+    fechaInicioGlobal = inputFechaInicio.value || null;
+    fechaFinGlobal = inputFechaFin.value || null;
+
+    // Reiniciar a la primera página al filtrar
+    init(1);
+  });
+}
+
+
+  setupFilterListeners();
 
 
 
