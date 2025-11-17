@@ -13,21 +13,29 @@ let fechaFinGlobal = null;
 // --- FUNCIONES AUXILIARES ---
 
 function createProduccionRow(produccion) {
-  return `
+  const idRol = JSON.parse(localStorage.getItem('user'))?.id_rol;
+  
+  const tabla = `
     <tr>
       <td>${produccion.id_produccion}</td>
-      <td>${produccion.nombre_galpon }</td>
+      <td>${produccion.nombre_galpon}</td>
       <td>${produccion.cantidad || 'Sin Cantidad'}</td>
       <td>${produccion.fecha}</td>
       <td>${produccion.tamaño}</td>
-
       <td class="text-end">
         <button class="btn btn-sm btn-info btn-edit-produccion" data-produccion-id="${produccion.id_produccion}">
           <i class="fa-regular fa-pen-to-square"></i>
         </button>
+        ${idRol === 1 ? `
+          <button class="btn btn-sm btn-danger btn-eliminar-produccion" data-produccion-id="${produccion.id_produccion}">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        ` : ''}
       </td>
     </tr>
   `;
+  
+  return tabla;
 }
 
 // --- MODAL DE EDICIÓN ---
