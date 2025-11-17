@@ -130,6 +130,13 @@ async function handleTableClick(event) {
     const produccionId = editButton.dataset.produccionId;
     openEditModal(produccionId);
   }
+
+   const deleteButton = event.target.closest('.btn-eliminar-produccion');
+  if (deleteButton) {
+    const produccionId = deleteButton.dataset.produccionId;
+    eliminarProduccion(produccionId); // ← AQUÍ SE CONECTA
+    return;
+  }
 }
 
 // --- FUNCIÓN PRINCIPAL DE INICIALIZACIÓN ---
@@ -212,9 +219,20 @@ function setupFilterListeners() {
   });
 }
 
+async function eliminarProduccion(produccionId) {
+  try {
+    if (!confirm('¿Estás seguro de que quieres eliminar esta producción?')) return;
+    
+    await produccionHuevosService.DeleteProduccionHuevos(produccionId);
+    alert('Producción eliminada correctamente');
+    init(currentPage);
+  } catch (error) {
+    console.error('Error al eliminar producción:', error);
+    alert('Error: ' + error.message);
+  }
+}
 
-  setupFilterListeners();
-
-
+setupFilterListeners();
 
 export { init };
+

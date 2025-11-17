@@ -33,6 +33,12 @@ export const produccionHuevosService = {
     const qs = `limit=${limit}&offset=${offset}&fecha_inicio=${fecha_inicio || ""}&fecha_fin=${fecha_fin || ""}`;
 
     return request(`/produccion-huevos/all?${qs}`);
+  },
+
+  DeleteProduccionHuevos: (produccion_id) => {
+    return request(`/produccion-huevos/by-id/${produccion_id}`, {
+      method: 'DELETE'
+    });
   }
 
 };
