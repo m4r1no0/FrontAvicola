@@ -1,30 +1,31 @@
-// Este archivo tendrá una única función request que se encargará de todo el trabajo estandar: 
-// añadir la URL base, poner el token, y manejar los errores 401. Esto evita repetir código en cada servicio.
-
-// La única función que necesitamos importar es la de logout.
-// La importamos para usarla en caso de un error 401.
 import { authService } from './auth.service.js';
 
 const API_BASE_URL = 'https://backendfastapi-1-1nm3.onrender.com';
 
-/**
- * Cliente central para realizar todas las peticiones a la API.
- * @param {string} endpoint - El endpoint al que se llamará (ej. '/users/get-by-centro').
- * @param {object} [options={}] - Opciones para la petición fetch (method, headers, body).
- * @returns {Promise<any>} - La respuesta de la API en formato JSON.
- */                          
 export async function request(endpoint, options = {}) {
+
+    // --- 👇 NUEVO: manejo de params ------
+    if (options.params) {
+        const queryString = new URLSearchParams(
+            Object.fromEntries(
+                Object.entries(options.params)
+                    .filter(([_, v]) => v !== null && v !== undefined)
+            )
+        ).toString();
+
+        endpoint += `?${queryString}`;
+    }
+    // --------------------------------------
+
     const url = `${API_BASE_URL}${endpoint}`;
     const token = localStorage.getItem('access_token');
 
-    // Configuramos las cabeceras por defecto
     const headers = {
         'Content-Type': 'application/json',
         'accept': 'application/json',
-        ...options.headers, // Permite sobrescribir o añadir cabeceras
+        ...options.headers,
     };
 
-    // Si hay un token, lo añadimos a la cabecera de Authorization
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
     }
@@ -32,18 +33,15 @@ export async function request(endpoint, options = {}) {
     try {
         const response = await fetch(url, { ...options, headers });
 
-        // Manejo centralizado del error 401 (Token inválido/expirado)
         if (response.status === 401) {
             alert('No tiene permisos');
-            // return Promise.reject(new Error('Sesión expirada.'));
         }
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ detail: 'Ocurrió un error en la petición.' }));
             throw new Error(errorData.detail);
         }
-        
-        // Si la respuesta no tiene contenido (ej. status 204), devolvemos un objeto vacío.
+
         return response.status === 204 ? {} : await response.json();
 
     } catch (error) {
@@ -51,5 +49,3 @@ export async function request(endpoint, options = {}) {
         throw error;
     }
 }
-
-// XLgYz9lCctoQ3GuUuiiMW8diCiTq9dvv8gggsdyWsYG8K2kgPicfsm3g0bRS2JgFF3n9cxkXAH

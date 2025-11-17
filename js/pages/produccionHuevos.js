@@ -3,6 +3,13 @@ import { produccionHuevosService } from '../api/produccionHuevos.service.js';
 let modalInstance = null; // Guardará la instancia del modal
 let originalFecha = null;
 
+// --- VARIABLES DE PAGINACIÓN ---
+let currentPage = 1;
+let limit = 10;
+let fechaInicioGlobal = null;
+let fechaFinGlobal = null;
+
+
 // --- FUNCIONES AUXILIARES ---
 
 function createProduccionRow(produccion) {
@@ -36,9 +43,10 @@ async function openEditModal(produccionId) {
 
     originalFecha = produccion.fecha;
     document.getElementById('edit-produccion-id').value = produccion.id_produccion;
-    document.getElementById('edit-fecha').value = produccion.id_galpon;
+    document.getElementById('edit-produccion-nombre').value = produccion.nombre_galpon;
     document.getElementById('edit-cantidad').value = produccion.cantidad;
-    document.getElementById('edit-id-tipo-huevo').value = produccion.fecha || '';
+    document.getElementById('edit-fecha').value = produccion.fecha;
+    document.getElementById('edit-tamaño').value = produccion.tamaño;
 
     modalInstance.show();
   } catch (error) {
@@ -56,7 +64,8 @@ async function handleUpdateSubmit(event) {
   const updatedData = {
     fecha: document.getElementById('edit-fecha').value,
     cantidad: parseInt(document.getElementById('edit-cantidad').value),
-    id_tipo: document.getElementById('edit-id-tipo-huevo').value
+    id_tipo: document.getElementById('edit-tamaño').value,
+    galpon: document.getElementById('edit-produccion-nombre').value
   };
 
   try {
@@ -103,26 +112,36 @@ async function handleTableClick(event) {
 
 // --- FUNCIÓN PRINCIPAL DE INICIALIZACIÓN ---
 
-async function init() {
+async function init(page = 1) {
+  currentPage = page;
+
   const tableBody = document.getElementById('produccion-table-body');
   if (!tableBody) return;
 
   tableBody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando producciones...</td></tr>';
 
   try {
-    const producciones = await produccionHuevosService.GetProduccionHuevosAll();
+    const producciones = await produccionHuevosService.GetProduccionHuevosAll({
+      page: currentPage,
+      limit,
+      fecha_inicio: fechaInicioGlobal,
+      fecha_fin: fechaFinGlobal
+    });
 
     if (producciones && producciones.length > 0) {
       tableBody.innerHTML = producciones.map(createProduccionRow).join('');
     } else {
       tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No se encontraron registros.</td></tr>';
     }
+
+    renderPaginationControls();
+
   } catch (error) {
     console.error('Error al obtener producciones:', error);
     tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Error al cargar datos.</td></tr>`;
   }
 
-  // Listener del formulario
+  // Listeners
   const editForm = document.getElementById('edit-produccion-form');
   tableBody.removeEventListener('click', handleTableClick);
   tableBody.addEventListener('click', handleTableClick);
@@ -132,5 +151,27 @@ async function init() {
   createForm.removeEventListener('submit', handleCreateSubmit);
   createForm.addEventListener('submit', handleCreateSubmit);
 }
+
+function renderPaginationControls() {
+  const paginationDiv = document.getElementById("pagination-controls");
+  if (!paginationDiv) return;
+
+  paginationDiv.innerHTML = `
+    <button id="btn-prev" class="btn btn-secondary me-2">Anterior</button>
+    <span>Página ${currentPage}</span>
+    <button id="btn-next" class="btn btn-secondary ms-2">Siguiente</button>
+  `;
+
+  document.getElementById("btn-prev").onclick = () => {
+    if (currentPage > 1) init(currentPage - 1);
+  };
+
+  document.getElementById("btn-next").onclick = () => {
+    init(currentPage + 1);
+  };
+}
+
+
+
 
 export { init };

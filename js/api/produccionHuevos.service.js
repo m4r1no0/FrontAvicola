@@ -25,7 +25,15 @@ export const produccionHuevosService = {
     });
   },
 
-  GetProduccionHuevosAll: () => {
-    return request(`/produccion-huevos/all`);
-  },
+  GetProduccionHuevosAll: ({ page = 1, limit = 10, fecha_inicio = null, fecha_fin = null } ={}) => {
+  const offset = (page - 1) * limit;
+
+  return request('/produccion-huevos/all', {
+    params: { limit, offset, fecha_inicio, fecha_fin }
+  });
+}
+
+
+
+
 };
