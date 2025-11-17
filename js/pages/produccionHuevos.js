@@ -52,12 +52,12 @@ async function openEditModal(produccionId) {
 
     // --- VALIDACIÓN DE FECHA ---
     inputFecha.value = produccion.fecha;
-    inputFecha.min = produccion.fecha; // No permite fechas anteriores
+    inputFecha.max = produccion.fecha; // No permite fechas anteriores
 
     // Opcional: mostrar alerta si se intenta cambiar por debajo del mínimo
     inputFecha.addEventListener('input', () => {
-      if (inputFecha.value < inputFecha.min) {
-        inputFecha.value = inputFecha.min;
+      if (inputFecha.value > inputFecha.max) {
+        inputFecha.value = inputFecha.max;
       }
     });
 
