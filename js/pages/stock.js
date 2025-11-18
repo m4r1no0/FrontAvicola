@@ -38,7 +38,7 @@ async function openEditModal(stockId) {
   try {
     const stock = await stockService.GetStockById(stockId);
 
-    document.getElementById("edit-id-producto").value = stock.id_stock;
+    document.getElementById("edit-id-producto").value = stock.id_producto;
     document.getElementById("edit-unidad-medida").value = stock.unidad_medida;
     document.getElementById("edit-id-produccion").value = stock.id_produccion;
     document.getElementById("edit-cantidad-disponible").value = stock.cantidad_disponible;
