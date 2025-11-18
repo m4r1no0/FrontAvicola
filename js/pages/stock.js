@@ -10,13 +10,13 @@ function createStockRow(stock) {
 
   return `
     <tr>
-        <td>${stock.id_stock}</td>
+        <td>${stock.id_producto}</td>
         <td>${stock.unidad_medida}</td>
         <td>${stock.id_produccion}</td>
         <td>${stock.cantidad_disponible}</td>
 
         <td class="text-end">
-            <button class="btn btn-sm btn-info btn-edit-stock" data-id="${stock.id_stock}">
+            <button class="btn btn-sm btn-info btn-edit-stock" data-id="${stock.id_producto}">
                 <i class="fa-regular fa-pen-to-square"></i>
             </button>
 
@@ -56,7 +56,7 @@ async function openEditModal(stockId) {
 async function handleEditSubmit(event) {
   event.preventDefault();
 
-  const updatedStock = {
+  const UpdateStock = {
     unidad_medida: document.getElementById("edit-unidad-medida").value,
     id_produccion: parseInt(document.getElementById("edit-id-produccion").value),
     cantidad_disponible: parseInt(document.getElementById("edit-cantidad-disponible").value),
@@ -65,7 +65,7 @@ async function handleEditSubmit(event) {
   const id = document.getElementById("edit-id-producto").value;
 
   try {
-    await stockService.UpdateStock(id, updatedStock);
+    await stockService.UpdateStock(id, UpdateStock);
     modalEditInstance.hide();
     init();
   } catch (error) {
