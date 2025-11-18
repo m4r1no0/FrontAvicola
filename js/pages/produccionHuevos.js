@@ -26,7 +26,7 @@ function createProduccionRow(produccion) {
         <button class="btn btn-sm btn-info btn-edit-produccion" data-produccion-id="${produccion.id_produccion}">
           <i class="fa-regular fa-pen-to-square"></i>
         </button>
-        ${idRol === 1 ? `
+        ${idRol === 1 || idRol === 2 ? `
           <button class="btn btn-sm btn-danger btn-eliminar-produccion" data-produccion-id="${produccion.id_produccion}">
             <i class="fa-regular fa-trash-can"></i>
           </button>
