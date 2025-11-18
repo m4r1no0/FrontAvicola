@@ -109,10 +109,6 @@ function handleTableClick(event) {
     openEditModal(id);
   }
 
-  if (deleteBtn) {
-    const id = deleteBtn.dataset.id;
-    deleteStock(id);
-  }
 }
 
 // ----------------------------
