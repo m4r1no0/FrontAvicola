@@ -31,6 +31,9 @@ const loadContent = async (page) => {
     }else if (page === 'produccion_huevos') {
       import('./pages/produccionHuevos.js')
         .then(module => module.init());
+    }else if (page === 'stock') {
+      import('./pages/stock.js')
+        .then(module => module.init());
     }else if (page === 'sensor_types') {
       import('./pages/sensor_types.js')
     .then(sensorTypesModule => sensorTypesModule.init());
