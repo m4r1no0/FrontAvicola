@@ -20,9 +20,6 @@ function createStockRow(stock) {
                 <i class="fa-regular fa-pen-to-square"></i>
             </button>
 
-            <button class="btn btn-sm btn-danger btn-delete-stock" data-id="${stock.id_stock}">
-                <i class="fa-regular fa-trash-can"></i>
-            </button>
         </td>
     </tr>
   `;
@@ -106,7 +103,6 @@ async function handleCreateSubmit(event) {
 // ----------------------------
 function handleTableClick(event) {
   const editBtn = event.target.closest(".btn-edit-stock");
-  const deleteBtn = event.target.closest(".btn-delete-stock");
 
   if (editBtn) {
     const id = editBtn.dataset.id;
