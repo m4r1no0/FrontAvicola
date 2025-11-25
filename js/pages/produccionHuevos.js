@@ -23,11 +23,11 @@ function createProduccionRow(produccion) {
       <td>${produccion.fecha}</td>
       <td>${produccion.tamaño}</td>
       <td class="text-end">
-        <button class="btn btn-sm btn-info btn-edit-produccion" data-produccion-id="${produccion.id_produccion}">
+        <button class="btn btn-sm btn-success btn-edit-produccion text-black" data-produccion-id="${produccion.id_produccion}">
           <i class="fa-regular fa-pen-to-square"></i>
         </button>
         ${idRol === 1 || idRol === 2 ? `
-          <button class="btn btn-sm btn-danger btn-eliminar-produccion" data-produccion-id="${produccion.id_produccion}">
+          <button class="btn btn-sm btn-secondary btn-eliminar-produccion" data-produccion-id="${produccion.id_produccion}">
             <i class="fa-regular fa-trash-can"></i>
           </button>
         ` : ''}
@@ -186,9 +186,9 @@ function renderPaginationControls() {
   if (!paginationDiv) return;
 
   paginationDiv.innerHTML = `
-    <button id="btn-prev" class="btn btn-secondary me-2">Anterior</button>
-    <span>Página ${currentPage}</span>
-    <button id="btn-next" class="btn btn-secondary ms-2">Siguiente</button>
+    <button id="btn-prev" class="btn btn-secondary me-2"><</button>
+    <span>${currentPage}</span>
+    <button id="btn-next" class="btn btn-secondary ms-2">></button>
   `;
 
   document.getElementById("btn-prev").onclick = () => {
