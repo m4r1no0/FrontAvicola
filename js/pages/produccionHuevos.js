@@ -106,7 +106,18 @@ async function handleUpdateSubmit(event) {
   try {
     await produccionHuevosService.UpdateProduccionHuevos(produccionId, updatedData);
     modalInstance.hide();
-    init(); // recarga la tabla
+    init();
+    
+      Swal.fire({
+      icon: "success",
+      title: "¡Actualizado!",
+      text: "La producción se actualizó correctamente.",
+      confirmButtonText: "Aceptar",
+      customClass: {
+        confirmButton: "btn btn-success"
+      },
+      buttonsStyling: false
+    });// recarga la tabla
   } catch (error) {
     console.error("Error:", error);
 
