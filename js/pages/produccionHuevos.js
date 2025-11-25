@@ -17,7 +17,6 @@ function createProduccionRow(produccion) {
   
   const tabla = `
     <tr>
-      <td>${produccion.id_produccion}</td>
       <td>${produccion.nombre_galpon}</td>
       <td>${produccion.cantidad || 'Sin Cantidad'}</td>
       <td>${produccion.fecha}</td>
@@ -71,8 +70,22 @@ async function openEditModal(produccionId) {
 
     modalInstance.show();
   } catch (error) {
-    console.error(`Error al obtener datos de la producción ${produccionId}:`, error);
-    alert('No se pudieron cargar los datos de la producción.');
+    console.error("Error:", error);
+
+    Swal.fire({
+      icon: "error",
+      title: "Error al cargar datos",
+      text: "No se pudieron cargar los datos de la producción.",
+      confirmButtonText: "Aceptar",
+      customClass: {
+        confirmButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    }).then(() => {
+      // 🔵 CERRAR MODAL DESPUÉS DEL SWEETALERT
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) modal.hide();
+    });
   }
 }
 
@@ -95,8 +108,19 @@ async function handleUpdateSubmit(event) {
     modalInstance.hide();
     init(); // recarga la tabla
   } catch (error) {
-    console.error(`Error al actualizar la producción ${produccionId}:`, error);
-    alert('No se pudo actualizar la producción.');
+    console.error("Error:", error);
+
+    // 🔴 SWEETALERT DE ERROR
+    Swal.fire({
+      icon: "error",
+      title: "Error al actualizar",
+      text: "No se pudo actualizar la producción.",
+      confirmButtonText: "Aceptar",
+      customClass: {
+        confirmButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
   }
 }
 
@@ -110,15 +134,42 @@ async function handleCreateSubmit(event) {
     fecha: document.getElementById('create-fecha').value,
     id_tipo_huevo: parseInt(document.getElementById('create-id-tipo-huevo').value)
   };
-
-  try {
+try {
     await produccionHuevosService.CreateProduccionHuevos(newData);
-    alert('Producción registrada correctamente.');
-    event.target.reset(); // limpia el formulario
-    init(); // recarga tabla
+
+    // 🔵 SWEETALERT DE ÉXITO
+    await Swal.fire({
+      icon: "success",
+      title: "Producción registrada!",
+      text: "La nueva producción fue guardada correctamente.",
+      timer: 1500,
+      showConfirmButton: false
+    });
+
+    // ✅ CERRAR EL MODAL LUEGO DEL SWEETALERT
+    const modal = bootstrap.Modal.getInstance(
+      document.getElementById("create-produccion-modal")
+    );
+    modal.hide();
+
+    // Limpiar el formulario y recargar
+    event.target.reset();
+    init();
+
   } catch (error) {
-    console.error('Error al crear la producción:', error);
-    alert('No se pudo registrar la producción.');
+    console.error("Error:", error);
+
+    // 🔴 SWEETALERT DE ERROR
+    Swal.fire({
+      icon: "error",
+      title: "Error al registrar",
+      text: "No se pudo crear la producción.",
+      confirmButtonText: "Aceptar",
+      customClass: {
+        confirmButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
   }
 }
 
@@ -220,15 +271,62 @@ function setupFilterListeners() {
 }
 
 async function eliminarProduccion(produccionId) {
-  try {
-    if (!confirm('¿Estás seguro de que quieres eliminar esta producción?')) return;
-    
+ try {
+    // 🔵 SWEETALERT DE CONFIRMACIÓN
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "Esta producción será eliminada permanentemente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "No, cancelar",
+      reverseButtons: true,
+      customClass: {
+        confirmButton: "btn btn-danger",
+        cancelButton: "btn btn-secondary"
+      },
+      buttonsStyling: false
+    });
+
+    // ❌ Si cancela, no eliminamos
+    if (!result.isConfirmed) return;
+
+    // 🗑️ Ejecutar eliminación
     await produccionHuevosService.DeleteProduccionHuevos(produccionId);
-    alert('Producción eliminada correctamente');
-    init(currentPage);
+
+    // 🟢 SWEETALERT DE ÉXITO
+    Swal.fire({
+      icon: "success",
+      title: "Producción eliminada",
+      text: "La producción fue eliminada correctamente.",
+      timer: 1500,
+      showConfirmButton: false
+    }).then(() => {
+
+      // ✅ CERRAR MODAL SI ESTÁ ABIERTO
+      const modal = bootstrap.Modal.getInstance(
+        document.getElementById("edit-produccion-modal")
+      );
+      if (modal) modal.hide();
+
+      // ♻️ Recargar tabla
+      init(currentPage);
+    });
+
   } catch (error) {
-    console.error('Error al eliminar producción:', error);
-    alert('Error: ' + error.message);
+    console.error("Error:", error);
+
+    // 🔴 SWEETALERT DE ERROR
+    Swal.fire({
+      icon: "error",
+      title: "Error al eliminar",
+      text: "No se pudo eliminar la producción.",
+      confirmButtonText: "Aceptar",
+      customClass: {
+        confirmButton: "btn btn-danger"
+      },
+      buttonsStyling: false
+    });
   }
 }
 
